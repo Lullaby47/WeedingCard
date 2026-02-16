@@ -45,10 +45,10 @@
             position: relative;
         }
 
-        /* CSS for glitter effect - falling particles */
+        /* CSS for glitter effect - continuous falling particles */
         .glitter {
             position: fixed;
-            top: -10px;
+            top: -20px;
             width: 8px;
             height: 8px;
             background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 215, 0, 0.7), rgba(255, 255, 255, 0));
@@ -56,8 +56,9 @@
             pointer-events: none;
             z-index: 99999;
             filter: blur(0.5px);
-            box-shadow: 0 0 10px gold;
+            box-shadow: 0 0 15px gold, 0 0 30px #ffd700;
             animation: glitterFall linear infinite;
+            will-change: transform, opacity;
         }
 
         @keyframes glitterFall {
@@ -66,7 +67,7 @@
                 opacity: 0.9;
             }
             100% {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
@@ -559,7 +560,7 @@
                 alert('✨ Thank you! Your presence is the greatest gift. ✨\n\nWe have recorded your RSVP.');
             });
 
-            // ---------- TRUMPETER FEATURE (opacity 0 -> 1 -> 0) with sound effect attempt ----------
+            // ---------- TRUMPETER FEATURE (opacity 0 -> 1 -> 0) ----------
             const leftTrumpet = document.getElementById('trumpeterLeft');
             const rightTrumpet = document.getElementById('trumpeterRight');
             const shubhHeader = document.getElementById('shubhVichar');
@@ -594,14 +595,13 @@
                 playTrumpets();
             });
 
-            // ---------- LOCATION FEATURE (images from /images folder, with correct filenames) ----------
+            // ---------- LOCATION FEATURE (images from /images folder) ----------
             const locationTrigger = document.getElementById('locationTrigger');
             const imageOverlay = document.getElementById('imageOverlay');
             const overlayImage = document.getElementById('overlayImage');
             const imageCaption = document.getElementById('imageCaption');
             const envelopeCard = document.getElementById('envelopeCard');
 
-            // EXACT filenames from your directory - using ./images/ folder
             const imageSequence = [
                 { file: 'images/world.jpg', caption: '🌍 World' },
                 { file: 'images/Nepal.jpg', caption: '🇳🇵 Nepal' },
@@ -612,7 +612,6 @@
             let imageIndex = 0;
             let imageInterval = null;
 
-            // Preload images to avoid flicker
             function preloadImages() {
                 imageSequence.forEach(item => {
                     const img = new Image();
@@ -622,34 +621,28 @@
             preloadImages();
 
             function startImageSequence() {
-                // If already running, clear previous
                 if (imageInterval) {
                     clearInterval(imageInterval);
                     imageInterval = null;
                 }
 
-                // hide card
                 envelopeCard.classList.add('hidden');
-
-                // show overlay
                 imageOverlay.classList.add('show');
 
                 imageIndex = 0;
                 showImageAtIndex(imageIndex);
 
-                // change image every 1 second (4 seconds total for 4 images)
                 imageInterval = setInterval(() => {
                     imageIndex++;
                     if (imageIndex < imageSequence.length) {
                         showImageAtIndex(imageIndex);
                     } else {
-                        // sequence complete: hide overlay and show card again
                         clearInterval(imageInterval);
                         imageInterval = null;
                         setTimeout(() => {
                             imageOverlay.classList.remove('show');
                             envelopeCard.classList.remove('hidden');
-                        }, 1000); // hold last image a bit then hide
+                        }, 1000);
                     }
                 }, 1000);
             }
@@ -690,7 +683,7 @@
                 if (keys.length > 10) keys.shift();
             });
 
-            // mouse flicker shimmer (fun)
+            // mouse flicker shimmer
             let lastX = 0;
             panel.addEventListener('mousemove', (e) => {
                 if (Math.abs(e.clientX - lastX) > 60) {
@@ -703,32 +696,76 @@
                 }
             });
 
-            // ---------- GLITTER EFFECT & CELEBRATION SOUND ----------
-            // Generate falling glitter particles
-            const numGlitters = 50; // Number of glitter particles
-            for (let i = 0; i < numGlitters; i++) {
-                const glitter = document.createElement('div');
-                glitter.classList.add('glitter');
-                document.body.appendChild(glitter);
-                glitter.style.left = `${Math.random() * 100}%`; 
-                glitter.style.animationDuration = `${Math.random() * 2 + 1.5}s`; // between 1.5s and 3.5s
-                glitter.style.animationDelay = `${Math.random() * 2}s`; 
-                // Randomize size slightly
-                const size = Math.random() * 6 + 4;
-                glitter.style.width = `${size}px`;
-                glitter.style.height = `${size}px`;
+            // ---------- GLITTER EFFECT (continuous falling) ----------
+            function createGlitterParticles(count) {
+                for (let i = 0; i < count; i++) {
+                    const glitter = document.createElement('div');
+                    glitter.classList.add('glitter');
+                    document.body.appendChild(glitter);
+                    
+                    // Random horizontal position
+                    glitter.style.left = `${Math.random() * 100}%`;
+                    
+                    // Random animation duration between 2.5s and 5s for continuous flow
+                    const duration = Math.random() * 2.5 + 2.5; // 2.5s to 5s
+                    glitter.style.animationDuration = `${duration}s`;
+                    
+                    // Random delay so they don't all start at once
+                    glitter.style.animationDelay = `${Math.random() * 3}s`;
+                    
+                    // Random size variation
+                    const size = Math.random() * 8 + 4; // 4px to 12px
+                    glitter.style.width = `${size}px`;
+                    glitter.style.height = `${size}px`;
+                    
+                    // Slight variation in color tone (gold/silver/white)
+                    const hue = Math.random() * 30 + 40; // gold range
+                    glitter.style.background = `radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, ${200 + Math.random() * 55}, 0, 0.7), rgba(255, 255, 255, 0))`;
+                }
             }
 
-            // Play celebration sound from sounds folder
-            try {
-                const audio = new Audio('sounds/celebration-sound.mp3');
-                audio.play().catch(e => {
-                    console.log('Audio play failed (autoplay restrictions):', e);
-                    // Most browsers block autoplay; user interaction will trigger later
-                });
-            } catch (error) {
-                console.log('Audio error:', error);
+            // Create initial batch of 80 glitter particles for rich effect
+            createGlitterParticles(80);
+            
+            // Continuously add new glitters every 2 seconds to maintain the effect
+            setInterval(() => {
+                // Add 5-10 new glitters at a time
+                const newCount = Math.floor(Math.random() * 6) + 5;
+                createGlitterParticles(newCount);
+            }, 2000);
+
+            // ---------- CELEBRATION SOUND (looping) ----------
+            function playCelebrationSound() {
+                try {
+                    const audio = new Audio('sounds/celebration-sound.mp3');
+                    audio.loop = true; // Loop continuously
+                    audio.volume = 0.5; // Set to 50% volume to not be too loud
+                    
+                    // Play and handle autoplay restrictions
+                    const playPromise = audio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Autoplay prevented. Sound will play after user interaction.', error);
+                            // Fallback: play after first click anywhere on page
+                            const startAudioOnInteraction = function() {
+                                audio.play().then(() => {
+                                    console.log('Sound started after user interaction');
+                                }).catch(e => console.log('Still blocked:', e));
+                                document.removeEventListener('click', startAudioOnInteraction);
+                                document.removeEventListener('touchstart', startAudioOnInteraction);
+                            };
+                            document.addEventListener('click', startAudioOnInteraction);
+                            document.addEventListener('touchstart', startAudioOnInteraction);
+                        });
+                    }
+                } catch (error) {
+                    console.log('Audio creation error:', error);
+                }
             }
+
+            // Start the celebration sound
+            playCelebrationSound();
         })();
     </script>
 </body>
