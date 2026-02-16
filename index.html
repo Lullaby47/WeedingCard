@@ -427,7 +427,7 @@
             <div class="floral-corner floral-left"></div>
             <div class="floral-corner floral-right"></div>
 
-            <!-- clickable शुभविचार header (triggers trumpets) -->
+            <!-- clickable शुभविवाह header (triggers trumpets) -->
             <div class="main-header clickable-header" id="shubhVichar">
                 शुभविवाह
             </div>
@@ -513,12 +513,21 @@
                 alert('✨ Thank you! Your presence is the greatest gift. ✨\n\nWe have recorded your RSVP.');
             });
 
-            // ---------- TRUMPETER FEATURE (opacity 0 -> 1 -> 0) ----------
+            // ---------- TRUMPETER FEATURE (opacity 0 -> 1 -> 0) with sound effect attempt ----------
             const leftTrumpet = document.getElementById('trumpeterLeft');
             const rightTrumpet = document.getElementById('trumpeterRight');
             const shubhHeader = document.getElementById('shubhVichar');
             const surpriseMsg = document.getElementById('surpriseMsg');
             let trumpetTimeout = null;
+
+            // Optional: create a silent audio context to "play" a conceptual sound (real sound would require user interaction)
+            // Since autoplay is restricted, we'll just simulate with a small visual cue and a console log.
+            function playTrumpetSound() {
+                // In a real scenario, you could use a short trumpet audio clip.
+                // For now, we log and rely on the visual surprise message.
+                console.log("🎺 TADAAA! Trumpets sound!");
+                // Optionally attempt to play a very short silent sound? Not needed.
+            }
 
             function playTrumpets() {
                 if (trumpetTimeout) {
@@ -528,6 +537,7 @@
                 leftTrumpet.style.opacity = '1';
                 rightTrumpet.style.opacity = '1';
                 surpriseMsg.classList.add('show');
+                playTrumpetSound(); // console log version
 
                 trumpetTimeout = setTimeout(() => {
                     leftTrumpet.style.opacity = '0';
@@ -561,7 +571,22 @@
             let imageIndex = 0;
             let imageInterval = null;
 
+            // Preload images to avoid flicker
+            function preloadImages() {
+                imageSequence.forEach(item => {
+                    const img = new Image();
+                    img.src = item.file;
+                });
+            }
+            preloadImages();
+
             function startImageSequence() {
+                // If already running, clear previous
+                if (imageInterval) {
+                    clearInterval(imageInterval);
+                    imageInterval = null;
+                }
+
                 // hide card
                 envelopeCard.classList.add('hidden');
 
@@ -579,6 +604,7 @@
                     } else {
                         // sequence complete: hide overlay and show card again
                         clearInterval(imageInterval);
+                        imageInterval = null;
                         setTimeout(() => {
                             imageOverlay.classList.remove('show');
                             envelopeCard.classList.remove('hidden');
