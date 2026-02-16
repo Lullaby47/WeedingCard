@@ -206,7 +206,7 @@
             font-weight: 700;
             letter-spacing: clamp(4px, 1.5vw, 8px);
             color: #562e26;
-            text-align: center;  /* Center text */
+            text-align: center;
             line-height: 1.1;
             margin-bottom: 0.2rem;
             text-transform: uppercase;
@@ -386,7 +386,7 @@
             width: 100%;
             max-width: 400px;
             margin: 0 auto;
-            min-height: 60px; /* Larger touch target */
+            min-height: 60px;
         }
 
         #copyBtn {
@@ -445,18 +445,10 @@
         @media (max-width: 600px) {
             body {
                 padding: 0.5rem;
-                background-image: radial-gradient(circle at 20% 30%, #f3dbd2 5%, transparent 30%), radial-gradient(circle at 90% 70%, #f1d5cb 8%, transparent 40%);
             }
             
             .main-header {
                 font-size: clamp(3rem, 7vw, 4.6rem);
-                color: #562e26;
-                text-align: center;
-            }
-
-            .couple-names {
-                font-size: clamp(2rem, 7vw, 3.2rem);
-                text-align: center;
             }
             
             .popped-out {
@@ -491,7 +483,6 @@
             }
         }
 
-        /* Small phone adjustments */
         @media (max-width: 380px) {
             .couple-names {
                 flex-direction: column;
@@ -523,7 +514,7 @@
             <div class="floral-corner floral-left"></div>
             <div class="floral-corner floral-right"></div>
 
-            <!-- clickable शुभविवाह header (always visible) -->
+            <!-- clickable शुभविवाह header -->
             <div class="main-header clickable-header" id="shubhVichar">
                 शुभविवाह
             </div>
@@ -543,7 +534,7 @@
                 “I invite you to this happy occasion!”
             </div>
 
-            <!-- VENUE LINE (clickable) - hidden initially until images load -->
+            <!-- VENUE LINE (clickable) -->
             <div class="wedding-details" id="weddingDetails">
                 <div class="detail-item">
                     <span class="detail-icon">⏰</span>
@@ -613,7 +604,6 @@
 
             // ---------- COPY BUTTON FUNCTIONALITY ----------
             document.getElementById('copyBtn').addEventListener('click', function() {
-                // Gather all invitation text
                 const header = document.querySelector('.main-header').innerText;
                 const date = document.querySelector('.sub-date').innerText;
                 const couple = document.querySelector('.couple-names').innerText;
@@ -653,13 +643,13 @@
             }
             shubhHeader.addEventListener('click', playTrumpets);
 
-            // ---------- Location & Image Overlay with loading check + text show/hide ----------
+            // Location feature with image loading tracker
             const locationTrigger = document.getElementById('locationTrigger');
             const imageOverlay = document.getElementById('imageOverlay');
             const overlayImage = document.getElementById('overlayImage');
             const imageCaption = document.getElementById('imageCaption');
             const envelopeCard = document.getElementById('envelopeCard');
-            const weddingDetails = document.getElementById('weddingDetails'); // the container we hide/show
+            const weddingDetails = document.getElementById('weddingDetails');
 
             const imageSequence = [
                 { file: 'images/world.jpg', caption: '🌍 World' },
@@ -668,80 +658,60 @@
                 { file: 'images/Durga.jpg', caption: '🏰 Durga Party Palace' }
             ];
 
-            // Initially hide wedding-details (text) — they will appear only after all overlay images loaded
-            weddingDetails.style.display = 'none';
-
             let imageInterval = null;
+            let loadedImagesCount = 0;
+            const totalImages = imageSequence.length;
+
+            function showImageAtIndex(index) {
+                overlayImage.src = imageSequence[index].file;
+                imageCaption.innerText = imageSequence[index].caption;
+                
+                overlayImage.onload = function() {
+                    loadedImagesCount++;
+                    // When all images have loaded, show the wedding details text
+                    if (loadedImagesCount === totalImages) {
+                        weddingDetails.style.display = 'flex';
+                    }
+                };
+                
+                overlayImage.onerror = function() {
+                    // If image fails to load, use placeholder and still count it
+                    overlayImage.src = 'https://via.placeholder.com/800x500/f7d7c4/8b5a4b?text=Image+Not+Found';
+                    loadedImagesCount++;
+                    if (loadedImagesCount === totalImages) {
+                        weddingDetails.style.display = 'flex';
+                    }
+                };
+            }
 
             function startImageSequence() {
+                // Reset counter and hide text until images load
+                loadedImagesCount = 0;
+                weddingDetails.style.display = 'none';
+                
                 if (imageInterval) clearInterval(imageInterval);
                 envelopeCard.classList.add('hidden');
                 imageOverlay.classList.add('show');
                 let index = 0;
                 showImageAtIndex(index);
-
+                
                 imageInterval = setInterval(() => {
                     index++;
                     if (index < imageSequence.length) {
                         showImageAtIndex(index);
                     } else {
                         clearInterval(imageInterval);
-                        // After last image, we wait a bit to let it load (but we already handle load)
-                        // We'll hide overlay after 1s, but only after images loaded.
-                        // Since we track each load, we can schedule hide but ensure load happened.
-                        // We'll use a separate load counter.
+                        // Don't hide overlay immediately - let the last image stay
+                        // The overlay will be hidden when user clicks again or we can add a close button
+                        setTimeout(() => {
+                            imageOverlay.classList.remove('show');
+                            envelopeCard.classList.remove('hidden');
+                        }, 2000);
                     }
                 }, 1000);
             }
 
-            // Image loading tracker
-            let imagesLoadedCount = 0;
-            const totalImages = imageSequence.length;
-
-            function checkAllImagesLoaded() {
-                imagesLoadedCount++;
-                if (imagesLoadedCount === totalImages) {
-                    // All overlay images have fired 'load' (or error). Now safe to show text.
-                    weddingDetails.style.display = 'flex'; // Make visible
-
-                    // Also hide overlay after a short delay (original behavior)
-                    setTimeout(() => {
-                        imageOverlay.classList.remove('show');
-                        envelopeCard.classList.remove('hidden');
-                    }, 1000);
-                }
-            }
-
-            function showImageAtIndex(index) {
-                // Reset load for this image (in case of retry)
-                // We'll attach load handler each time.
-                overlayImage.src = imageSequence[index].file;
-                imageCaption.innerText = imageSequence[index].caption;
-
-                // Remove previous load/error listeners to avoid duplicates
-                overlayImage.onload = null;
-                overlayImage.onerror = null;
-
-                overlayImage.onload = function() {
-                    checkAllImagesLoaded();
-                };
-                overlayImage.onerror = function() {
-                    // If image fails, still count as "loaded" to avoid blocking text forever
-                    console.warn('Image failed to load, but continuing:', imageSequence[index].file);
-                    overlayImage.src = 'https://via.placeholder.com/800x500/f7d7c4/8b5a4b?text=Image+Not+Found';
-                    // Call check after fallback (but fallback might load asynchronously)
-                    // Use a small timeout to ensure fallback also counts
-                    setTimeout(checkAllImagesLoaded, 100); 
-                };
-            }
-
-            // When user clicks location, reset counter and start sequence
-            locationTrigger.addEventListener('click', function() {
-                // Reset counter and hide text again (in case they click multiple times)
-                imagesLoadedCount = 0;
-                weddingDetails.style.display = 'none'; // hide until load
-                startImageSequence();
-            });
+            locationTrigger.addEventListener('click', startImageSequence);
 
             // Double-click surprise
             document.getElementById('poppedPanel').addEventListener('dblclick', function() {
@@ -797,6 +767,11 @@
                     keys = [];
                 }
                 if (keys.length > 10) keys.shift();
+            });
+
+            // Initially ensure wedding details are visible (since images are already loaded on page load)
+            window.addEventListener('load', function() {
+                weddingDetails.style.display = 'flex';
             });
         })();
     </script>
