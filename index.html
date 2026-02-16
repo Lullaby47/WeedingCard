@@ -3,7 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>शुभविवाह · आयुष & आयुषा · Durga Palace</title>
+    
+    <!-- Primary Title (appears in browser tab and link previews) -->
+    <title>Invitation to Our Wedding · आयुष & आयुषा</title>
+    
+    <!-- Meta tags for professional link sharing (Open Graph / WhatsApp / Instagram / Twitter) -->
+    <meta property="og:title" content="Invitation to Our Wedding · आयुष & आयुषा" />
+    <meta property="og:description" content="We invite you to celebrate our wedding. Join us for this special occasion at Durga Party Palace, Itahari!" />
+    <meta property="og:image" content="https://weedingcard-production.up.railway.app/images/wedding-preview.jpg" />
+    <meta property="og:url" content="https://weedingcard-production.up.railway.app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="आयुष & आयुषा Wedding" />
+    
+    <!-- Twitter Card (for larger image preview) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Invitation to Our Wedding · आयुष & आयुषा" />
+    <meta name="twitter:description" content="We invite you to celebrate our wedding. Join us for this special occasion at Durga Party Palace, Itahari!" />
+    <meta name="twitter:image" content="https://weedingcard-production.up.railway.app/images/wedding-preview.jpg" />
+    
+    <!-- Fallback meta description for SEO -->
+    <meta name="description" content="We invite you to celebrate the wedding of चिरंजीवी आयुष पोखरेल & आयुषा आचार्य on Feb 25th, 2026 at Durga Party Palace, Itahari." />
+    
     <style>
         * {
             margin: 0;
@@ -520,13 +540,8 @@
             const surpriseMsg = document.getElementById('surpriseMsg');
             let trumpetTimeout = null;
 
-            // Optional: create a silent audio context to "play" a conceptual sound (real sound would require user interaction)
-            // Since autoplay is restricted, we'll just simulate with a small visual cue and a console log.
             function playTrumpetSound() {
-                // In a real scenario, you could use a short trumpet audio clip.
-                // For now, we log and rely on the visual surprise message.
                 console.log("🎺 TADAAA! Trumpets sound!");
-                // Optionally attempt to play a very short silent sound? Not needed.
             }
 
             function playTrumpets() {
@@ -537,7 +552,7 @@
                 leftTrumpet.style.opacity = '1';
                 rightTrumpet.style.opacity = '1';
                 surpriseMsg.classList.add('show');
-                playTrumpetSound(); // console log version
+                playTrumpetSound();
 
                 trumpetTimeout = setTimeout(() => {
                     leftTrumpet.style.opacity = '0';
@@ -614,11 +629,9 @@
             }
 
             function showImageAtIndex(index) {
-                // Construct path to local image (in images folder)
                 overlayImage.src = imageSequence[index].file;
                 imageCaption.innerText = imageSequence[index].caption;
                 
-                // Optional: handle image loading error
                 overlayImage.onerror = function() {
                     console.warn('Image not found:', imageSequence[index].file);
                     overlayImage.src = 'https://via.placeholder.com/800x500/f7d7c4/8b5a4b?text=Image+Not+Found';
