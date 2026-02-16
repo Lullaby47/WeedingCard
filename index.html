@@ -45,6 +45,32 @@
             position: relative;
         }
 
+        /* CSS for glitter effect - falling particles */
+        .glitter {
+            position: fixed;
+            top: -10px;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 215, 0, 0.7), rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            filter: blur(0.5px);
+            box-shadow: 0 0 10px gold;
+            animation: glitterFall linear infinite;
+        }
+
+        @keyframes glitterFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
         /* trumpeters (hidden with opacity 0 initially) */
         .trumpeter {
             position: fixed;
@@ -676,6 +702,33 @@
                     lastX = e.clientX;
                 }
             });
+
+            // ---------- GLITTER EFFECT & CELEBRATION SOUND ----------
+            // Generate falling glitter particles
+            const numGlitters = 50; // Number of glitter particles
+            for (let i = 0; i < numGlitters; i++) {
+                const glitter = document.createElement('div');
+                glitter.classList.add('glitter');
+                document.body.appendChild(glitter);
+                glitter.style.left = `${Math.random() * 100}%`; 
+                glitter.style.animationDuration = `${Math.random() * 2 + 1.5}s`; // between 1.5s and 3.5s
+                glitter.style.animationDelay = `${Math.random() * 2}s`; 
+                // Randomize size slightly
+                const size = Math.random() * 6 + 4;
+                glitter.style.width = `${size}px`;
+                glitter.style.height = `${size}px`;
+            }
+
+            // Play celebration sound from sounds folder
+            try {
+                const audio = new Audio('sounds/celebration-sound.mp3');
+                audio.play().catch(e => {
+                    console.log('Audio play failed (autoplay restrictions):', e);
+                    // Most browsers block autoplay; user interaction will trigger later
+                });
+            } catch (error) {
+                console.log('Audio error:', error);
+            }
         })();
     </script>
 </body>
