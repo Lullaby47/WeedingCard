@@ -33,7 +33,7 @@
 
         body {
             min-height: 100vh;
-            background: #eed9d0;
+            background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -187,29 +187,6 @@
             position: relative;
             z-index: 20;
             backdrop-filter: blur(4px);
-        }
-
-        /* Floral corners - adjusted for mobile */
-        .floral-corner {
-            position: absolute;
-            width: min(140px, 25vw);
-            height: min(140px, 25vw);
-            background-repeat: no-repeat;
-            background-size: contain;
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 30;
-            filter: drop-shadow(0 4px 8px rgba(170, 100, 80, 0.35));
-        }
-        .floral-left {
-            top: max(-22px, -5vw);
-            left: max(-20px, -5vw);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none"><path d="M32,30 Q16,32 12,48 Q6,64 22,78 Q34,90 54,85 Q70,80 80,65 Q92,50 82,34 Q72,20 52,16 Q38,12 32,30" fill="%23f5c7d2" stroke="%23b38578" stroke-width="1.5" opacity="0.9"/><circle cx="34" cy="48" r="5.5" fill="%23fceaea" stroke="%239e6d5f" stroke-width="1"/><circle cx="64" cy="62" r="5" fill="%23ffe2df" stroke="%239e6d5f" stroke-width="1"/><path d="M82 35 Q96 26 106 40 Q115 53 100 68 Q88 80 70 64 Q58 50 72 36 Q82 24 98 32" fill="%23f2bbc9" stroke="%23a87566" stroke-width="1.3" opacity="0.8"/><path d="M48 24 Q40 12 28 18" stroke="%23c69a84" stroke-width="1.5" fill="none" opacity="0.5"/></svg>');
-        }
-        .floral-right {
-            top: max(-22px, -5vw);
-            right: max(-20px, -5vw);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none"><path d="M88,30 Q104,32 108,48 Q114,64 98,78 Q86,90 66,85 Q50,80 40,65 Q28,50 38,34 Q48,20 68,16 Q82,12 88,30" fill="%23f5c7d2" stroke="%23b38578" stroke-width="1.5" opacity="0.9"/><circle cx="86" cy="48" r="5.5" fill="%23fceaea" stroke="%239e6d5f" stroke-width="1"/><circle cx="56" cy="62" r="5" fill="%23ffe2df" stroke="%239e6d5f" stroke-width="1"/><path d="M38 35 Q24 26 14 40 Q5 53 20 68 Q32 80 50 64 Q62 50 48 36 Q38 24 22 32" fill="%23f2bbc9" stroke="%23a87566" stroke-width="1.3" opacity="0.8"/></svg>');
         }
 
         .clickable-header {
